@@ -1,0 +1,17 @@
+{
+	"name": "puppeteer-vitest-workers-assets",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"types:generate": "npx wrangler types --experimental-include-runtime",
+		"test": "npx vitest"
+	},
+	"devDependencies": {
+		"@cloudflare/puppeteer": "^0.0.14",
+		"@cloudflare/vitest-pool-workers": "^0.5.18",
+		"puppeteer": "^23.5.3",
+		"typescript": "^5.6.3",
+		"vitest": "2.0.5",
+		"wrangler": "^3.80.4"
+	}
+}
