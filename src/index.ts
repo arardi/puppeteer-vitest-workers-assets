@@ -6,6 +6,12 @@ export default {
 			return new Response(new Date().toISOString());
 		}
 
+		if (url.pathname === "/api/joke") {
+			return fetch("https://icanhazdadjoke.com/", {
+				headers: { Accept: "text/plain" },
+			});
+		}
+
 		if (url.pathname === "/binding") {
 			const response = await env.ASSETS.fetch(
 				new Request("http://fakehost/blog/hello-world")

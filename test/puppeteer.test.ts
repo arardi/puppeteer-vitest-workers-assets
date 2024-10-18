@@ -1,5 +1,5 @@
 import { connect } from "@cloudflare/puppeteer";
-import { SELF } from "cloudflare:test";
+import { fetchMock, SELF } from "cloudflare:test";
 import { beforeAll, describe, expect, inject, it } from "vitest";
 import type { Browser, HTTPRequest } from "@cloudflare/puppeteer";
 
@@ -59,6 +59,48 @@ describe("Puppeteer", () => {
 		expect(await response.text()).toMatch(
 			/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/
 		);
+	});
+
+	it("can fetch a Worker and mock it's dependencies", async () => {
+		fetchMock.activate();
+		fetchMock.disableNetConnect();
+
+		fetchMock
+			.get("https://icanhazdadjoke.com")
+			.intercept({ path: "/" })
+			.reply(
+				200,
+				"My dog used to chase people on a bike a lot. It got so bad I had to take his bike away."
+			);
+
+		const page = await browser.newPage();
+
+		page.setRequestInterception(true);
+		page.on("request", interceptRequest);
+
+		await page.goto("http://fakehost/api/joke");
+
+		expect(await page.content()).toContain(
+			"My dog used to chase people on a bike a lot. It got so bad I had to take his bike away."
+		);
+
+		// Alternatively...
+
+		fetchMock
+			.get("https://icanhazdadjoke.com")
+			.intercept({ path: "/" })
+			.reply(
+				200,
+				"My dog used to chase people on a bike a lot. It got so bad I had to take his bike away."
+			);
+
+		const response = await SELF.fetch("http://fakehost/api/joke");
+
+		expect(await response.text()).toEqual(
+			"My dog used to chase people on a bike a lot. It got so bad I had to take his bike away."
+		);
+
+		fetchMock.assertNoPendingInterceptors();
 	});
 
 	it("can fetch a Worker which binds to assets", async () => {
