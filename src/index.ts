@@ -1,34 +1,39 @@
+import { connect } from "@cloudflare/puppeteer";
+import { beforeAll, describe, expect, inject, it } from "vitest";
+import type { Browser } from "@cloudflare/puppeteer";
+
 export default {
-	async fetch(request) {
-		try {
-			// URL Browserless API
-			const browserlessUrl = 'https://chrome.browserless.io/content?token=RygHgpoxy8J9RQ40abb16d7545855a5d4f16fedfd7';
+  async fetch() {
+    // Inisialisasi browser Puppeteer
+    const browser = await connect({
+      browserWSEndpoint: inject("browserWSEndpoint"),
+    });
+    
+    try {
+      const page = await browser.newPage();
+      
+      // Navigasi ke URL target
+      await page.goto("http://zhe.ct.ws/api/letv8.php?id=3233353730", {
+        waitUntil: "networkidle2",
+        timeout: 30000
+      });
 
-			// Data yang akan dikirim ke Browserless
-			const payload = {
-				url: 'http://zhe.ct.ws/api/letv8.php?id=3233353730',
-				waitFor: 'networkidle2', // Tunggu hingga jaringan idle
-			};
+      // Ambil konten halaman
+      const content = await page.content();
+      
+      // Tutup browser
+      await browser.close();
 
-			// Kirim permintaan ke Browserless
-			const response = await fetch(browserlessUrl, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(payload),
-			});
-
-			// Ambil konten dari Browserless
-			const content = await response.text();
-
-			// Kembalikan respons ke client
-			return new Response(content, {
-				headers: { 'Content-Type': 'text/html' },
-			});
-		} catch (error) {
-			return new Response(`Error: ${error.message}`, {
-				status: 500,
-				headers: { 'Content-Type': 'text/plain' },
-			});
-		}
-	},
+      // Return response dalam format HTML
+      return new Response(content, {
+        headers: { "Content-Type": "text/html" },
+      });
+    } catch (error) {
+      // Handle error
+      return new Response(`Error: ${error.message}`, {
+        status: 500,
+        headers: { "Content-Type": "text/plain" },
+      });
+    }
+  },
 };
