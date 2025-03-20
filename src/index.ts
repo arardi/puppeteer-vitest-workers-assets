@@ -4,7 +4,7 @@ export default {
   async fetch(request) {
     // Inisialisasi browser Puppeteer
     const browser = await connect({
-      browserWSEndpoint: "wss://your-browserless-endpoint", // Ganti dengan endpoint Browserless atau layanan serupa
+      browserWSEndpoint: "wss://production-sfo.browserless.io/chromium?token=RygHgpoxy8J9RQ40abb16d7545855a5d4f16fedfd7&proxy=residential&proxyCountry=us&proxyStickyt", // Ganti dengan endpoint Browserless atau layanan serupa
     });
 
     try {
