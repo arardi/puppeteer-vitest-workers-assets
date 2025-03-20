@@ -1,26 +1,24 @@
 import { connect } from "@cloudflare/puppeteer";
-import { beforeAll, describe, expect, inject, it } from "vitest";
-import type { Browser } from "@cloudflare/puppeteer";
 
 export default {
-  async fetch() {
+  async fetch(request) {
     // Inisialisasi browser Puppeteer
     const browser = await connect({
-      browserWSEndpoint: inject("browserWSEndpoint"),
+      browserWSEndpoint: "wss://your-browserless-endpoint", // Ganti dengan endpoint Browserless atau layanan serupa
     });
-    
+
     try {
       const page = await browser.newPage();
-      
+
       // Navigasi ke URL target
       await page.goto("http://zhe.ct.ws/api/letv8.php?id=3233353730", {
         waitUntil: "networkidle2",
-        timeout: 30000
+        timeout: 30000,
       });
 
       // Ambil konten halaman
       const content = await page.content();
-      
+
       // Tutup browser
       await browser.close();
 
