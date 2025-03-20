@@ -14,7 +14,7 @@ export default {
 
 		if (url.pathname === "/binding") {
 			const response = await env.ASSETS.fetch(
-				new Request("http://fakehost/blog/hello-world")
+				new Request("https://api64.ipify.org/?format=json")
 			);
 			return new HTMLRewriter()
 				.on("h1", {
